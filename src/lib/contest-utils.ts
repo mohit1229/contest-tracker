@@ -3,7 +3,7 @@ import { RawContest } from "@/lib/platform-fetchers" // or move RawContest to ty
 
 export function transformRawContests(raw: RawContest[]): ContestProps[] {
     return raw.map(contest => ({
-      id: crypto.randomUUID(),
+      id: contest.id, // ✅ Use real DB ID
       title: contest.title,
       platform: contest.platform,
       description: contest.description,
@@ -11,11 +11,12 @@ export function transformRawContests(raw: RawContest[]): ContestProps[] {
       endTime: contest.endTime,
       url: contest.url,
       bookmarked: contest.bookmarked ?? false,
-      reminder: false,
-      note: "",
-      solutionUrl: ""
+      reminder: contest.reminder ?? false,
+      note: contest.note ?? "",
+      solutionUrl: contest.solutionUrl ?? "",
     }))
   }
+  
   
   // Update the RawContest type to allow null for the bookmarked property
 

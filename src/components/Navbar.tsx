@@ -1,13 +1,17 @@
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink } from "./ui/navigation-menu"
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import Link from "next/link" // or "next/link" if you're using Next.js
+import { ModeToggle } from "./dark-toggle"
 
 function Navbar() {
   return (
     <div className="p-4 shadow-md flex justify-between items-center">
+        <span className="text-lg font-bold">SyntaxContest</span>
+
       <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
+        
+        <NavigationMenuList className="">
+          <NavigationMenuItem className="text-md">
             <NavigationMenuLink asChild>
               <Link href="/">Home</Link>
             </NavigationMenuLink>
@@ -20,7 +24,9 @@ function Navbar() {
         </NavigationMenuList>
       </NavigationMenu>
 
-      <div>
+      <div className="gap-2">
+      <ModeToggle />
+
         <SignedIn>
           <UserButton />
         </SignedIn>
