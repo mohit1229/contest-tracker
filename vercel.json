@@ -1,9 +1,0 @@
-{
-    "cron": [
-      {
-        "path": "/api/cron/fetch-contests",
-        "schedule": "0 */6 * * *"
-      }
-    ]
-  }
-  
