@@ -3,7 +3,14 @@ import { getContestsFromServer } from "@/actions/fetch-contests"
 
 export const runtime = "nodejs" // required for non-edge APIs
 
-export async function GET() {
+export async function GET(req: Request) {
+  const authHeader = req.headers.get("Authorization")
+  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
+
+  if (authHeader !== expectedAuth) {
+    return new Response("Unauthorized", { status: 401 })
+  }
+
   try {
     const contests = await getContestsFromServer()
     console.log(`⏰ Cron fetched ${contests.count} contests`)
