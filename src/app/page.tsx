@@ -7,11 +7,11 @@ async function Page() {
   
   return (
     <div className="bg-zinc-100 dark:bg-zinc-950">
-      <div className="mt-16 text-6xl font-bold px-20">
+      <div className="mt-16 md:text-6xl font-bold md:px-20 text-2xl px-4">
 <h1 >Manage and Track Contest both Upcoming and Past Contest easily from various platforms like Leetcode, Codeforces, Codechef and more</h1>
 </div>
       {/* <FetchContestsButton /> */}
-    <div className="flex items-center justify-center mt-16 ">
+    <div className="flex items-center justify-center mt-16 p-4 ">
         <Card className="border-lg">
           <CardContent>
         
