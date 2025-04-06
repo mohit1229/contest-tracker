@@ -34,5 +34,5 @@ export async function GET(req: Request) {
     },
   })
 
-  return Response.redirect("http://localhost:3000/") // or wherever
+  return Response.redirect("https://syntaxcontest.vercel.app/") // or wherever
 }
