@@ -1,36 +1,190 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-.
-## Getting Started
 
-First, run the development server:
+# 🧠 SyntaxContest - Coding Contest Tracker
+
+A web app to track coding contests from **LeetCode**, **Codeforces**, and **CodeChef**, with features like bookmarking, reminders, Google Calendar integration, and note-taking – personalized per user.
+
+---
+
+## 🚀 Features
+
+- 📅 View upcoming and past contests (last 10)
+- 🔖 Bookmark contests
+- ⏰ Set Google Calendar reminders
+- 📝 Add notes and solution links
+- 🔐 Clerk-authenticated user-specific data
+- 🧠 Clean and modular backend using `Next.js` App Router and `Prisma`
+
+---
+
+## ⚙️ Tech Stack
+
+| Purpose           | Tech/Service       |
+|------------------|--------------------|
+| Frontend         | Next.js (App Router) |
+| Backend/API      | Node.js + Server Actions |
+| ORM              | Prisma              |
+| Auth             | Clerk.dev           |
+| Calendar Sync    | Google Calendar API |
+| Contest APIs     | LeetCode, Codeforces, CodeChef |
+
+---
+
+## 🗂️ Project Structure
+
+```
+/lib
+  ├── platform-fetchers.ts     // Fetch contests from external APIs
+  ├── getContests.ts           // Fetch contests from DB with user data
+  ├── contests-utils.ts        // Transform contests
+  ├── getOrCreateUser.ts       // Sync Clerk user with DB
+  ├── prisma.ts                // Prisma client
+
+/actions
+  ├── bookmark.ts              // Toggle bookmark status
+  ├── reminder.ts              // Toggle reminder + Google Calendar
+  ├── fetch-contests.ts        // Upsert fetched contests to DB
+
+/types
+  └── contest.ts               // Shared contest type definitions
+```
+
+---
+
+## 🧩 Core Modules
+
+### 📥 1. Fetching Contests (`lib/platform-fetchers.ts`)
+
+Fetches contests from:
+- ✅ LeetCode (GraphQL)
+- ✅ Codeforces (REST)
+- ✅ CodeChef (REST)
+
+
+```
+
+---
+
+### 🔃 2. Upserting to DB (`actions/fetch-contests.ts`)
+
+- Transforms contests
+- Performs `prisma.contest.upsert()` to sync data without duplicates
+- Skips updating user-specific fields like notes, reminders
+
+---
+
+### 📦 3. Getting Contests from DB (`lib/getContests.ts`)
+
+- Fetches `upcoming` and `previous` contests
+- Includes user-specific info using `userContests` relation
+- Returns normalized data structure
+
+---
+
+### 👤 4. User Management (`lib/getOrCreateUser.ts`)
+
+- Uses Clerk’s `auth()` to fetch current user
+- Creates or finds corresponding user in Prisma
+- Links with `GoogleAccount` and `UserContest`
+
+---
+
+### 🧷 5. Bookmark (`actions/bookmark.ts`)
+
+- Toggle bookmark per contest per user
+- Uses composite key `userId + contestId` in `UserContest` table
+
+---
+
+### ⏰ 6. Reminder (`actions/reminder.ts`)
+
+- Toggle reminder status
+- On enable:
+  - Fetches user’s Google Calendar tokens
+  - Creates an event in their calendar with contest details
+- Event includes contest title, link, and time
+
+---
+
+## 🔐 Authentication
+
+- Powered by **Clerk.dev**
+- All API routes and server actions check for logged-in user via `auth()`
+- Each user is tied to their own bookmarks, reminders, notes
+
+---
+
+## 📅 Google Calendar Integration
+
+- When a reminder is set:
+  - The event is created in the user’s Google Calendar using access/refresh tokens
+  - Includes: title, URL, start/end time
+- Stored via `GoogleAccount` model
+
+---
+
+## 🛠️ Setup & Installation
+
+### 1. Clone and Install
+
+```bash
+git clone https://github.com/your-username/coding-contest-tracker.git
+cd coding-contest-tracker
+npm install
+```
+
+---
+
+### 2. Setup Environment Variables
+
+Create a `.env` file:
+
+```env
+DATABASE_URL=postgresql://user:pass@localhost:5432/contestdb
+CLERK_SECRET_KEY=your-clerk-secret
+CLERK_PUBLISHABLE_KEY=your-clerk-publishable
+GOOGLE_CLIENT_ID=...
+GOOGLE_CLIENT_SECRET=...
+```
+
+---
+
+### 3. Setup Prisma
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+---
+
+### 4. Run Dev Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 To Do / Future Plans
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [ ] Frontend UI for user interaction
+- [ ] Discuss page
+- [ ] Geeksforgeeks integration
+- [ ] Contest filtering, search, tags
+- [ ] Email or SMS reminders
+- [ ] Admin dashboard
+- [ ] ML-based contest recommendations
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🤝 Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Want to help improve the tracker? PRs and issues are welcome!
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📄 License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+MIT License
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
