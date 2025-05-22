@@ -10,7 +10,7 @@ import { toggleBookmark } from "@/actions/bookmark"
 import { toggleReminder } from "@/actions/reminder"
 import { ContestProps } from "@/types/contest"
 import { Badge } from "./ui/badge"
-import { useUser, SignInButton } from "@clerk/nextjs"
+import { useUser} from "@clerk/nextjs"
 
 export default function ContestBox({
   tabDescription,
@@ -52,13 +52,14 @@ export default function ContestBox({
       <CardContent className="space-y-4">
 
         {/* Top Buttons */}
-        {!isSignedIn && (
+        {/* {!isSignedIn && (
           <div className="text-center">
+            
             <SignInButton mode="modal">
               <Button variant="default" size="sm">Sign in to bookmark & set reminders</Button>
             </SignInButton>
           </div>
-        )}
+        )} */}
 
         {isSignedIn && !hasConnectedCalendar && (
           <div className="text-center">
@@ -76,7 +77,7 @@ export default function ContestBox({
 
         {contests.map((contest) => (
           <div key={contest.id} className="border p-3 rounded-md shadow-sm bg-muted/50">
-            <div className="flex flex-col md:flex-row justify-between gap-2">
+            <div className="flex flex-row justify-between gap-2">
               <div className="flex-1">
                 <h3 className="font-semibold text-md break-words mb-4">{contest.title}</h3>
                 <p className="text-sm text-muted-foreground"><Badge>{contest.platform}</Badge></p>
