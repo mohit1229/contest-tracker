@@ -19,7 +19,7 @@ import { Menu } from "lucide-react" // For the hamburger icon
 
 function Navbar() {
   return (
-    <div className="py-4 md:px-28 px-6 flex justify-between items-center">
+    <div className="py-4 md:px-28 px-2 sm:px-6 flex justify-between items-center">
       <span className="text-lg font-[600]">SyntaxContest</span>
 
       {/* Desktop Navigation - Visible on md and larger screens */}
