@@ -63,23 +63,22 @@ function Navbar() {
               <span className="sr-only">Toggle navigation menu</span>
             </Mybutton>
           </DrawerTrigger>
-          <DrawerContent className="w-full max-w-md mx-auto rounded-t-[10px] h-[60%] flex flex-col justify-between p-4">
+          <DrawerContent className="w-full max-w-md mx-auto rounded-t-[10px] h-[60%] flex flex-col justify-between dark:bg-zinc-950/90">
             {/* Drawer Header (Optional, but good for context) */}
              <DrawerHeader className="text-center">
               <DrawerTitle className="text-2xl font-bold">Menu</DrawerTitle>
               <DrawerDescription>Navigate through the application.</DrawerDescription>
             </DrawerHeader>
-            <div className="flex flex-col items-center gap-6 pt-8">
-              <span className="text-2xl font-bold">Menu</span>
+            <div className="flex flex-col items-center w-full">
               {/* Navigation Links inside Drawer */}
               <NavigationMenu>
-              <NavigationMenuList className="flex flex-col space-y-6"> {/* Stack vertically */}
-                <NavigationMenuItem className="text-xl">
+              <NavigationMenuList className="flex flex-col space-y-1"> {/* Stack vertically */}
+                <NavigationMenuItem className="text-xl dark:bg-zinc-800">
                   <NavigationMenuLink asChild>
                     <Link href="/">Home</Link>
                   </NavigationMenuLink>
                 </NavigationMenuItem>
-                <NavigationMenuItem className="text-xl">
+                <NavigationMenuItem className="text-xl dark:hover:bg-zinc-800">
                   <NavigationMenuLink asChild>
                     <Link href="/discuss">Discuss</Link>
                   </NavigationMenuLink>
@@ -89,9 +88,9 @@ function Navbar() {
             </div>
 
             {/* Actions inside Drawer Footer */}
-            <div className="flex flex-col items-center gap-4 pb-8">
+            <div className="flex flex-col items-center gap-2 pb-4">
               <ModeToggle />
-              <div>
+              <div className="">
                 <SignedIn>
                   <UserButton />
                 </SignedIn>

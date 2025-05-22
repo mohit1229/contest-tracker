@@ -29,7 +29,7 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en" suppressHydrationWarning>
       <head />
-      <body className="bg-zinc-100 dark:bg-zinc-900">
+      <body className="bg-zinc-100 dark:bg-zinc-950/80">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
