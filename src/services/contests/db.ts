@@ -14,29 +14,42 @@ export async function syncContestsToDatabase() {
     const { upcoming, past } = await fetchAllContests()
     const allContests = [...upcoming, ...past]
 
-    for (const contest of allContests) {
-      await prisma.contest.upsert({
-        where: { url: contest.url },
-        update: {
-          title: contest.title,
-          platform: contest.platform,
-          description: contest.description,
-          startTime: contest.startTime,
-          endTime: contest.endTime,
-          updatedAt: new Date(),
-        },
-        create: {
-          title: contest.title,
-          platform: contest.platform,
-          description: contest.description,
-          url: contest.url,
-          startTime: contest.startTime,
-          endTime: contest.endTime,
-        },
-      })
+    // Batch upserts into chunks of 10 to avoid timeouts
+    const chunkSize = 10
+    const chunks = []
+    for (let i = 0; i < allContests.length; i += chunkSize) {
+      chunks.push(allContests.slice(i, i + chunkSize))
     }
 
-    return { success: true, count: allContests.length }
+    let processedCount = 0
+    for (const chunk of chunks) {
+      await Promise.all(
+        chunk.map(contest =>
+          prisma.contest.upsert({
+            where: { url: contest.url },
+            update: {
+              title: contest.title,
+              platform: contest.platform,
+              description: contest.description,
+              startTime: contest.startTime,
+              endTime: contest.endTime,
+              updatedAt: new Date(),
+            },
+            create: {
+              title: contest.title,
+              platform: contest.platform,
+              description: contest.description,
+              url: contest.url,
+              startTime: contest.startTime,
+              endTime: contest.endTime,
+            },
+          })
+        )
+      )
+      processedCount += chunk.length
+    }
+
+    return { success: true, count: processedCount }
   } catch (error) {
     console.error("Failed to sync contests:", error)
     throw error
