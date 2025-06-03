@@ -84,7 +84,7 @@ function Navbar() {
               {/* Navigation Links inside Drawer */}
               <NavigationMenu>
               <NavigationMenuList className="flex flex-col space-y-1"> {/* Stack vertically */}
-                <NavigationMenuItem className="text-xl dark:bg-zinc-800">
+                <NavigationMenuItem className="text-xl dark:bg-zinc-800 rounded-full mb-2">
                   <NavigationMenuLink asChild>
                     <Link href="/">Home</Link>
                   </NavigationMenuLink>
