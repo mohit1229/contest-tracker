@@ -3,6 +3,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { revalidatePath } from "next/cache"
 import { prisma } from "@/lib/prisma"
+import { getOrCreateUser } from "@/lib/getOrCreateUser"
 
 export async function toggleBookmark(contestUrl: string) {
   const { userId } = await auth()
@@ -10,11 +11,9 @@ export async function toggleBookmark(contestUrl: string) {
     throw new Error("Authentication required")
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { clerkId: userId }
-  })
+  const dbUser = await getOrCreateUser()
   if (!dbUser) {
-    throw new Error("User not found")
+    throw new Error("Failed to get or create user")
   }
 
   const contest = await prisma.contest.findUnique({
@@ -33,8 +32,9 @@ export async function toggleBookmark(contestUrl: string) {
     }
   })
 
+  let result
   if (existing) {
-    await prisma.userContest.update({
+    result = await prisma.userContest.update({
       where: {
         userId_contestId: {
           userId: dbUser.id,
@@ -46,7 +46,7 @@ export async function toggleBookmark(contestUrl: string) {
       }
     })
   } else {
-    await prisma.userContest.create({
+    result = await prisma.userContest.create({
       data: {
         userId: dbUser.id,
         contestId: contest.id,
@@ -56,6 +56,7 @@ export async function toggleBookmark(contestUrl: string) {
   }
 
   revalidatePath("/")
+  return result
 }
 
 export async function toggleReminder(contestUrl: string) {
@@ -64,11 +65,9 @@ export async function toggleReminder(contestUrl: string) {
     throw new Error("Authentication required")
   }
 
-  const dbUser = await prisma.user.findUnique({
-    where: { clerkId: userId }
-  })
+  const dbUser = await getOrCreateUser()
   if (!dbUser) {
-    throw new Error("User not found")
+    throw new Error("Failed to get or create user")
   }
 
   const contest = await prisma.contest.findUnique({
@@ -87,8 +86,9 @@ export async function toggleReminder(contestUrl: string) {
     }
   })
 
+  let result
   if (existing) {
-    await prisma.userContest.update({
+    result = await prisma.userContest.update({
       where: {
         userId_contestId: {
           userId: dbUser.id,
@@ -100,7 +100,7 @@ export async function toggleReminder(contestUrl: string) {
       }
     })
   } else {
-    await prisma.userContest.create({
+    result = await prisma.userContest.create({
       data: {
         userId: dbUser.id,
         contestId: contest.id,
@@ -110,4 +110,5 @@ export async function toggleReminder(contestUrl: string) {
   }
 
   revalidatePath("/")
+  return result
 } 

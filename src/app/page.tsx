@@ -3,9 +3,14 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ContestTabs } from "@/components/contests"
 import { getContestsFromDatabase, syncContestsToDatabase } from "@/services/contests/db"
 import { prisma } from "@/lib/prisma"
+import { getOrCreateUser } from "@/lib/getOrCreateUser"
+
+// Add dynamic route segment configuration
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export default async function HomePage() {
-  const { userId } = await auth()
+  const { userId: clerkId } = await auth()
   
   // Check if we need to sync contests
   const contestCount = await prisma.contest.count()
@@ -13,8 +18,11 @@ export default async function HomePage() {
     await syncContestsToDatabase()
   }
   
+  // Get the database user if logged in
+  const dbUser = clerkId ? await getOrCreateUser() : null
+  
   // Get contests with user data if logged in
-  const { upcoming, past } = await getContestsFromDatabase(userId || undefined)
+  const { upcoming, past } = await getContestsFromDatabase(dbUser?.id)
   
   return (
     <div className="min-h-screen">
@@ -33,7 +41,7 @@ export default async function HomePage() {
             <ContestTabs 
               upcoming={upcoming}
               past={past}
-              isLoggedIn={!!userId}
+              isLoggedIn={!!clerkId}
             />
           </CardContent>
         </Card>

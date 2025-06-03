@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { UserContest } from "@/types"
 import { ContestCard } from "./ContestCard"
 import { toggleBookmark, toggleReminder } from "@/actions/contests"
@@ -8,24 +9,43 @@ import { toggleBookmark, toggleReminder } from "@/actions/contests"
 interface ContestListProps {
   contests: UserContest[]
   isLoggedIn: boolean
-  emptyMessage?: string
+  onContestUpdate: (contest: UserContest) => void
 }
 
-export function ContestList({ contests, isLoggedIn }: ContestListProps) {
+export function ContestList({ contests, isLoggedIn, onContestUpdate }: ContestListProps) {
   const [isPending, setIsPending] = useState(false)
+  const router = useRouter()
 
   async function handleAction(url: string, action: "bookmark" | "reminder") {
     if (!isLoggedIn) return
     
     setIsPending(true)
+    
+    // Find the contest to update
+    const contestToUpdate = contests.find(c => c.url === url)
+    if (!contestToUpdate) return
+
+    // Create updated contest for optimistic update
+    const updatedContest = {
+      ...contestToUpdate,
+      [action === "bookmark" ? "bookmarked" : "reminder"]: 
+        !contestToUpdate[action === "bookmark" ? "bookmarked" : "reminder"]
+    }
+
+    // Optimistically update UI
+    onContestUpdate(updatedContest)
+
     try {
       if (action === "bookmark") {
         await toggleBookmark(url)
       } else {
         await toggleReminder(url)
       }
+      router.refresh()
     } catch (error) {
       console.error("Error:", error)
+      // Revert the optimistic update on error
+      onContestUpdate(contestToUpdate)
     } finally {
       setIsPending(false)
     }
