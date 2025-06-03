@@ -88,6 +88,7 @@ export async function fetchFromCodeforces(getPastContests = false): Promise<RawC
   }
 }
 
+
 export async function fetchFromCodechef(getPastContests = false): Promise<RawContest[]> {
   try {
     const res = await axios.get(
@@ -97,24 +98,27 @@ export async function fetchFromCodechef(getPastContests = false): Promise<RawCon
     type CodechefContest = {
       contest_name: string
       contest_code: string
-      contest_start_date: string
-      contest_duration: number
+      contest_start_date: string // e.g., "2025-06-05 15:00:00"
+      contest_duration: number // in minutes
     }
 
     const contestsData = getPastContests
       ? res.data.past_contests
       : res.data.future_contests
 
-    return contestsData.map((c: CodechefContest) => ({
-      title: c.contest_name,
-      platform: "CodeChef",
-      description: "CodeChef Contest",
-      url: `https://www.codechef.com/${c.contest_code}`,
-      startTime: new Date(c.contest_start_date),
-      endTime: new Date(
-        new Date(c.contest_start_date).getTime() + c.contest_duration * 60 * 1000
-      ),
-    }))
+    return contestsData.map((c: CodechefContest) => {
+      const istDate = new Date(c.contest_start_date.replace(" ", "T")) // Force ISO format
+      const utcDate = new Date(istDate.getTime() - 5.5 * 60 * 60 * 1000) // Adjust to UTC
+
+      return {
+        title: c.contest_name,
+        platform: "CodeChef",
+        description: "CodeChef Contest",
+        url: `https://www.codechef.com/${c.contest_code}`,
+        startTime: utcDate,
+        endTime: new Date(utcDate.getTime() + c.contest_duration * 60 * 1000),
+      }
+    })
   } catch (error) {
     console.error("Failed to fetch from CodeChef:", error)
     return []
