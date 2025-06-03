@@ -1,5 +1,5 @@
 // app/api/cron/fetch-contests/route.ts
-import { getContestsFromServer } from "@/actions/fetch-contests"
+import { syncContestsToDatabase } from "@/services/contests/db"
 
 export const runtime = "nodejs" // required for non-edge APIs
 
@@ -12,8 +12,8 @@ export async function GET(req: Request) {
   }
 
   try {
-    const contests = await getContestsFromServer()
-    console.log(`⏰ Cron fetched ${contests.count} contests`)
+    const result = await syncContestsToDatabase()
+    console.log(`⏰ Cron fetched ${result.count} contests`)
 
     return new Response("Fetched successfully", { status: 200 })
   } catch (err) {

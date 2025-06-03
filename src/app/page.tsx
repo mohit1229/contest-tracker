@@ -4,9 +4,6 @@ import { ContestTabs } from "@/components/contests"
 import { getContestsFromDatabase, syncContestsToDatabase } from "@/services/contests/db"
 import { prisma } from "@/lib/prisma"
 
-// import { ModeToggle } from "@/components/dark-toggle"
-// import { FetchContestsButton } from "@/components/fetch-contest-button"
-
 export default async function HomePage() {
   const { userId } = await auth()
   
