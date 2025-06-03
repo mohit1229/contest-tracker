@@ -4,18 +4,22 @@ import { UserContest } from "@/types"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { generateGoogleCalendarUrl } from "@/lib/calendar-utils"
 
 interface ContestCardProps {
   contest: UserContest
   isLoggedIn: boolean
   isPending: boolean
-  onAction: (url: string, action: "bookmark" | "reminder") => void
+  onAction: (url: string, action: "bookmark") => void
 }
 
 export function ContestCard({ contest, isLoggedIn, isPending, onAction }: ContestCardProps) {
+  const isPastContest = new Date(contest.endTime) < new Date()
+  const calendarUrl = generateGoogleCalendarUrl(contest)
+
   return (
-    <Card className="hover:shadow-md transition-shadow duration-200">
-      <CardContent className="p-1">
+    <Card className="hover:shadow-md transition-shadow duration-200 dark:bg-neutral-900/80">
+      <CardContent className="p-2">
         <div className="flex flex-col md:flex-row justify-between gap-4">
           <div className="flex-1">
             <h3 className="font-semibold text-lg mb-2 text-foreground">{contest.title}</h3>
@@ -64,18 +68,21 @@ export function ContestCard({ contest, isLoggedIn, isPending, onAction }: Contes
               {contest.bookmarked ? "Bookmarked ✓" : "Bookmark"}
             </Button>
 
-            <Button
-              variant={contest.reminder ? "default" : "outline"}
-              size="sm"
-              disabled={isPending || !isLoggedIn}
-              onClick={() => onAction(contest.url, "reminder")}
-              className={`
-                transition-all duration-200
-                ${contest.reminder ? 'bg-blue-600 hover:bg-blue-700' : ''}
-              `}
-            >
-              {contest.reminder ? "Reminder Set ⏰" : "Set Reminder"}
-            </Button>
+            {!isPastContest && (
+              <Link
+                href={calendarUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="transition-all duration-200"
+                >
+                  Add to Calendar ⏰
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
 

@@ -32,22 +32,24 @@ export function ContestTabs({ upcoming: initialUpcoming, past: initialPast, isLo
   }
 
   return (
+    <div className="w-full max-w-4xl mx-auto px-1 sm:px-4 md:px-6 md:py-10 ">
     <Tabs defaultValue="upcoming" className="w-full">
-      <TabsList className="grid w-full grid-cols-3 mb-6">
-        <TabsTrigger value="upcoming" className="text-sm sm:text-base">
+      <TabsList className="flex flex-wrap md:flex-nowrap gap-2 md:gap-4 justify-center mb-4 w-full">
+        <TabsTrigger value="upcoming">
           Upcoming ({contests.upcoming.length})
         </TabsTrigger>
-        <TabsTrigger value="bookmarked" className="text-sm sm:text-base">
-          Bookmarked ({bookmarked.length})
-        </TabsTrigger>
-        <TabsTrigger value="past" className="text-sm sm:text-base">
+        
+        <TabsTrigger value="past">
           Past ({contests.past.length})
+        </TabsTrigger>
+        <TabsTrigger value="bookmarked">
+          Bookmarked ({bookmarked.length})
         </TabsTrigger>
       </TabsList>
 
-      <TabsContent value="upcoming" className="space-y-4">
+      <TabsContent value="upcoming">
         {!isLoggedIn && (
-          <div className="mb-4 p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+          <div className="mb-4 p-4 text-sm text-muted-foreground">
             <p>Sign in to bookmark contests and set reminders!</p>
           </div>
         )}
@@ -58,13 +60,20 @@ export function ContestTabs({ upcoming: initialUpcoming, past: initialPast, isLo
         />
       </TabsContent>
 
-      <TabsContent value="bookmarked" className="space-y-4">
+      <TabsContent value="past">
+        <ContestList 
+          contests={contests.past} 
+          isLoggedIn={isLoggedIn}
+          onContestUpdate={handleContestUpdate}
+        />
+      </TabsContent>
+      <TabsContent value="bookmarked">
         {!isLoggedIn ? (
-          <div className="p-4 bg-blue-50 text-blue-700 rounded-lg border border-blue-200">
+          <div className="p-4 text-sm text-muted-foreground">
             <p>Sign in to see your bookmarked contests!</p>
           </div>
         ) : bookmarked.length === 0 ? (
-          <div className="p-4 bg-yellow-50 text-yellow-700 rounded-lg border border-yellow-200">
+          <div className="p-4 text-sm text-muted-foreground">
             <p>No bookmarked contests yet. Bookmark some contests to see them here!</p>
           </div>
         ) : (
@@ -76,13 +85,7 @@ export function ContestTabs({ upcoming: initialUpcoming, past: initialPast, isLo
         )}
       </TabsContent>
 
-      <TabsContent value="past" className="space-y-4">
-        <ContestList 
-          contests={contests.past} 
-          isLoggedIn={isLoggedIn}
-          onContestUpdate={handleContestUpdate}
-        />
-      </TabsContent>
     </Tabs>
+    </div>
   )
 } 

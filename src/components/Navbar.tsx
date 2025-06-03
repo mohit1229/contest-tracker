@@ -5,6 +5,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import { ModeToggle } from "./dark-toggle"
 import Mybutton from "./my-button" // Assuming this is a custom button component
+import { useTheme } from "next-themes"
 
 // Shadcn Drawer imports
 import {
@@ -18,12 +19,15 @@ import {
 import { Menu } from "lucide-react" // For the hamburger icon
 
 function Navbar() {
+  const { theme } = useTheme()
+  const buttonVariant = theme === 'dark' ? 'light' : 'default'
+
   return (
     <div className="py-4 md:px-28 px-2 sm:px-6 flex justify-between items-center">
       <span className="text-lg font-[600]">SyntaxContest</span>
 
       {/* Desktop Navigation - Visible on md and larger screens */}
-      <NavigationMenu className="dark:text-zinc-200 hidden md:block">
+      <NavigationMenu className="dark:text-zinc-200 hidden md:block dark:bg-zinc-900/90 px-4 rounded-full">
         <NavigationMenuList className="flex space-x-4">
           <NavigationMenuItem className="text-md">
             <NavigationMenuLink asChild>
@@ -47,7 +51,7 @@ function Navbar() {
           </SignedIn>
           <SignedOut>
             <SignInButton mode="modal">
-              <Mybutton variant="light">Sign In</Mybutton>
+              <Mybutton variant={buttonVariant}>Sign In</Mybutton>
             </SignInButton>
           </SignedOut>
         </div>
@@ -58,7 +62,7 @@ function Navbar() {
         <Drawer>
           <DrawerTrigger asChild>
             {/* Using Mybutton for consistency, assuming it takes variant and size props */}
-            <Mybutton variant="light">
+            <Mybutton variant={buttonVariant}>
               <Menu className="h-6 w-6" />
               <span className="sr-only">Toggle navigation menu</span>
             </Mybutton>
@@ -96,7 +100,7 @@ function Navbar() {
                 </SignedIn>
                 <SignedOut>
                   <SignInButton mode="modal">
-                    <Mybutton variant="light">Sign In</Mybutton>
+                    <Mybutton variant={buttonVariant}>Sign In</Mybutton>
                   </SignInButton>
                 </SignedOut>
               </div>
