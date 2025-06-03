@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { generateGoogleCalendarUrl } from "@/lib/calendar-utils"
-
+import { AlarmClock } from "lucide-react"
 interface ContestCardProps {
   contest: UserContest
   isLoggedIn: boolean
@@ -79,7 +79,7 @@ export function ContestCard({ contest, isLoggedIn, isPending, onAction }: Contes
                   size="sm"
                   className="transition-all duration-200"
                 >
-                  Add to Calendar ⏰
+                  Add to Calendar <AlarmClock className="" />
                 </Button>
               </Link>
             )}
