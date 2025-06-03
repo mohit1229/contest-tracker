@@ -5,32 +5,42 @@ import { UserContest } from "@/types"
 import { fetchAllContests } from "./api"
 
 export async function syncContestsToDatabase() {
-  const { upcoming, past } = await fetchAllContests()
-  const allContests = [...upcoming, ...past]
-
-  for (const contest of allContests) {
-    await prisma.contest.upsert({
-      where: { url: contest.url },
-      update: {
-        title: contest.title,
-        platform: contest.platform,
-        description: contest.description,
-        startTime: contest.startTime,
-        endTime: contest.endTime,
-        updatedAt: new Date(),
-      },
-      create: {
-        title: contest.title,
-        platform: contest.platform,
-        description: contest.description,
-        url: contest.url,
-        startTime: contest.startTime,
-        endTime: contest.endTime,
-      },
-    })
+  // Skip during build
+  if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_BUILD_STEP === '1') {
+    return { success: true, count: 0, skipped: true }
   }
 
-  return { success: true, count: allContests.length }
+  try {
+    const { upcoming, past } = await fetchAllContests()
+    const allContests = [...upcoming, ...past]
+
+    for (const contest of allContests) {
+      await prisma.contest.upsert({
+        where: { url: contest.url },
+        update: {
+          title: contest.title,
+          platform: contest.platform,
+          description: contest.description,
+          startTime: contest.startTime,
+          endTime: contest.endTime,
+          updatedAt: new Date(),
+        },
+        create: {
+          title: contest.title,
+          platform: contest.platform,
+          description: contest.description,
+          url: contest.url,
+          startTime: contest.startTime,
+          endTime: contest.endTime,
+        },
+      })
+    }
+
+    return { success: true, count: allContests.length }
+  } catch (error) {
+    console.error("Failed to sync contests:", error)
+    throw error
+  }
 }
 
 export async function getContestsFromDatabase(userId?: string) {

@@ -1,23 +1,31 @@
 // app/api/cron/fetch-contests/route.ts
 import { syncContestsToDatabase } from "@/services/contests/db"
+import { NextResponse } from "next/server"
 
-export const runtime = "nodejs" // required for non-edge APIs
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+export const maxDuration = 300 // 5 minutes timeout
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("Authorization")
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
-
-  if (authHeader !== expectedAuth) {
-    return new Response("Unauthorized", { status: 401 })
-  }
-
   try {
+    // Check if we're in a build environment
+    if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_BUILD_STEP === '1') {
+      return NextResponse.json({ message: "Skipping during build" }, { status: 200 })
+    }
+
+    const authHeader = req.headers.get("Authorization")
+    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
+
+    if (authHeader !== expectedAuth) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
     const result = await syncContestsToDatabase()
     console.log(`⏰ Cron fetched ${result.count} contests`)
 
-    return new Response("Fetched successfully", { status: 200 })
+    return NextResponse.json({ success: true, count: result.count }, { status: 200 })
   } catch (err) {
     console.error("❌ Cron fetch failed:", err)
-    return new Response("Fetch failed", { status: 500 })
+    return NextResponse.json({ error: "Fetch failed", details: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 })
   }
 }
