@@ -41,6 +41,7 @@ model UserContest {
   contest      Contest   @relation(fields: [contestId], references: [id])
   contestId    String
   bookmarked   Boolean   @default(false)
+  reminder     Boolean   @default(false)
   note         String?
   solutionUrl  String?
   createdAt    DateTime  @default(now())
