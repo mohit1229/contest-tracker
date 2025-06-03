@@ -1,7 +1,16 @@
 import { prisma } from "@/lib/prisma"
 import { getOrCreateUser } from "@/lib/getOrCreateUser"
+import { getContestsFromServer } from "@/actions/fetch-contests"
 
 export async function getContests() {
+  // First, check if we have any contests in the database
+  const contestCount = await prisma.contest.count()
+  
+  // If no contests in DB, fetch them first
+  if (contestCount === 0) {
+    await getContestsFromServer()
+  }
+
   const user = await getOrCreateUser()
   const now = new Date()
 

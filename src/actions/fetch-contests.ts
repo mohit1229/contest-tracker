@@ -16,6 +16,7 @@ export async function getContestsFromServer() {
         description: contest.description,
         startTime: contest.startTime,
         endTime: contest.endTime,
+        updatedAt: new Date(),
       },
       create: {
         title: contest.title,
