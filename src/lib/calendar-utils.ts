@@ -1,5 +1,6 @@
 export function generateGoogleCalendarUrl(contest: {
   title: string;
+  platform: string;
   description?: string;
   url: string;
   startTime: Date;
