@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "@/lib/prisma"
-import { Contest, UserContest } from "@/types"
+import { UserContest } from "@/types"
 import { fetchAllContests } from "./api"
 
 export async function syncContestsToDatabase() {
@@ -62,7 +62,7 @@ export async function getContestsFromDatabase(userId?: string) {
       }
     : selectBase
 
-  const [upcoming, past] = await Promise.all([
+  const [upcomingRaw, pastRaw] = await Promise.all([
     prisma.contest.findMany({
       where: { startTime: { gt: now } },
       orderBy: { startTime: "asc" },
@@ -76,7 +76,24 @@ export async function getContestsFromDatabase(userId?: string) {
     }),
   ])
 
-  const normalizeContest = (contest: any): UserContest => {
+  type ContestWithUserData = {
+    id: string
+    title: string
+    platform: 'LeetCode' | 'Codeforces' | 'CodeChef'
+    description: string
+    url: string
+    startTime: Date
+    endTime: Date
+    updatedAt: Date
+    userContests?: Array<{
+      bookmarked: boolean
+      reminder: boolean
+      note: string | null
+      solutionUrl: string | null
+    }>
+  }
+
+  const normalizeContest = (contest: ContestWithUserData): UserContest => {
     const userData = contest.userContests?.[0]
     return {
       ...contest,
@@ -86,6 +103,10 @@ export async function getContestsFromDatabase(userId?: string) {
       solutionUrl: userData?.solutionUrl ?? null,
     }
   }
+
+  // Cast the raw results to the correct type since we know the platform values are valid
+  const upcoming = upcomingRaw as unknown as ContestWithUserData[]
+  const past = pastRaw as unknown as ContestWithUserData[]
 
   return {
     upcoming: upcoming.map(normalizeContest),
