@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font";
+import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${GeistSans.className} min-h-screen dark:bg-background bg-muted font-sans antialiased`}>
+    <html lang="en" suppressHydrationWarning className={GeistSans.className}>
+      <body className="min-h-screen dark:bg-background bg-muted antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

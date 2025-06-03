@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ModeToggle } from "./dark-toggle"
 import Mybutton from "./my-button" // Assuming this is a custom button component
 import { useTheme } from "next-themes"
+import { useEffect, useState } from "react"
 
 // Shadcn Drawer imports
 import {
@@ -19,8 +20,14 @@ import {
 import { Menu } from "lucide-react" // For the hamburger icon
 
 function Navbar() {
-  const { theme } = useTheme()
-  const buttonVariant = theme === 'dark' ? 'light' : 'default'
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const buttonVariant = mounted ? (resolvedTheme === 'dark' ? 'light' : 'default') : 'default'
 
   return (
     <div className="py-4 md:px-28 px-2 sm:px-6 flex justify-between items-center">
