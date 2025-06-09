@@ -1,7 +1,16 @@
 import { prisma } from "@/lib/prisma"
 import { getOrCreateUser } from "@/lib/getOrCreateUser"
+import { syncContestsToDatabase } from "@/services/contests/db"
 
 export async function getContests() {
+  // First, check if we have any contests in the database
+  const contestCount = await prisma.contest.count()
+  
+  // If no contests in DB, fetch them first
+  if (contestCount === 0) {
+    await syncContestsToDatabase()
+  }
+
   const user = await getOrCreateUser()
   const now = new Date()
 
@@ -40,7 +49,6 @@ export async function getContests() {
     prisma.contest.findMany({
       where: { endTime: { lt: now } },
       orderBy: { endTime: "desc" },
-      take: 10,
       select,
     }),
   ])

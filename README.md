@@ -1,4 +1,3 @@
-
 # 🧠 SyntaxContest - Coding Contest Tracker
 
 A web app to track coding contests from **LeetCode**, **Codeforces**, and **CodeChef**, with features like bookmarking, reminders, Google Calendar integration, and note-taking – personalized per user.
@@ -32,20 +31,37 @@ A web app to track coding contests from **LeetCode**, **Codeforces**, and **Code
 ## 🗂️ Project Structure
 
 ```
-/lib
-  ├── platform-fetchers.ts     // Fetch contests from external APIs
-  ├── getContests.ts           // Fetch contests from DB with user data
-  ├── contests-utils.ts        // Transform contests
-  ├── getOrCreateUser.ts       // Sync Clerk user with DB
-  ├── prisma.ts                // Prisma client
+src/
+  ├── actions/
+  │   └── contests.ts          // Server actions for bookmarks & reminders
+  │
+  ├── app/
+  │   ├── page.tsx            // Main page with contest tabs
+  │   └── api/
+  │       └── cron/
+  │           └── fetch-contests/  // Automated contest fetching
+  │
+  ├── components/
+  │   ├── ui/                 // Reusable UI components
+  │   └── contests/           // Contest-specific components
+  │       ├── ContestCard.tsx
+  │       ├── ContestList.tsx
+  │       └── ContestTabs.tsx
+  │
+  ├── lib/
+  │   ├── prisma.ts          // Prisma client
+  │   └── getOrCreateUser.ts // User management
+  │
+  ├── services/
+  │   └── contests/
+  │       ├── api.ts         // External API calls
+  │       └── db.ts          // Database operations
+  │
+  └── types/
+      └── index.ts           // TypeScript definitions
 
-/actions
-  ├── bookmark.ts              // Toggle bookmark status
-  ├── reminder.ts              // Toggle reminder + Google Calendar
-  ├── fetch-contests.ts        // Upsert fetched contests to DB
-
-/types
-  └── contest.ts               // Shared contest type definitions
+prisma/
+  └── schema.prisma         // Database schema
 ```
 
 ---
@@ -82,7 +98,7 @@ Fetches contests from:
 
 ### 👤 4. User Management (`lib/getOrCreateUser.ts`)
 
-- Uses Clerk’s `auth()` to fetch current user
+- Uses Clerk's `auth()` to fetch current user
 - Creates or finds corresponding user in Prisma
 - Links with `GoogleAccount` and `UserContest`
 
@@ -99,7 +115,7 @@ Fetches contests from:
 
 - Toggle reminder status
 - On enable:
-  - Fetches user’s Google Calendar tokens
+  - Fetches user's Google Calendar tokens
   - Creates an event in their calendar with contest details
 - Event includes contest title, link, and time
 
@@ -116,7 +132,7 @@ Fetches contests from:
 ## 📅 Google Calendar Integration
 
 - When a reminder is set:
-  - The event is created in the user’s Google Calendar using access/refresh tokens
+  - The event is created in the user's Google Calendar using access/refresh tokens
   - Includes: title, URL, start/end time
 - Stored via `GoogleAccount` model
 

@@ -1,23 +1,29 @@
 // app/api/cron/fetch-contests/route.ts
-import { getContestsFromServer } from "@/actions/fetch-contests"
+import { syncContestsToDatabase } from "@/services/contests/db"
+import { NextResponse } from "next/server"
 
-export const runtime = "nodejs" // required for non-edge APIs
+export const runtime = "nodejs"
+export const dynamic = "force-dynamic"
+export const maxDuration = 60 // Maximum allowed duration for hobby plan
 
 export async function GET(req: Request) {
-  const authHeader = req.headers.get("Authorization")
-  const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
-
-  if (authHeader !== expectedAuth) {
-    return new Response("Unauthorized", { status: 401 })
-  }
-
   try {
-    const contests = await getContestsFromServer()
-    console.log(`⏰ Cron fetched ${contests.count} contests`)
+    // Skip auth check in development
+    if (process.env.NODE_ENV !== 'development') {
+      const authHeader = req.headers.get("Authorization")
+      const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
 
-    return new Response("Fetched successfully", { status: 200 })
+      if (authHeader !== expectedAuth) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      }
+    }
+
+    const result = await syncContestsToDatabase()
+    console.log(`⏰ Cron fetched ${result.count} contests`)
+
+    return NextResponse.json({ success: true, count: result.count }, { status: 200 })
   } catch (err) {
     console.error("❌ Cron fetch failed:", err)
-    return new Response("Fetch failed", { status: 500 })
+    return NextResponse.json({ error: "Fetch failed", details: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 })
   }
 }

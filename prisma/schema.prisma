@@ -12,12 +12,12 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id             String         @id @default(cuid())
   clerkId        String         @unique
   email          String         @unique
   userContests   UserContest[]
-  googleAccessToken String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 }
@@ -38,26 +38,14 @@ model UserContest {
   id           String    @id @default(cuid())
   user         User      @relation(fields: [userId], references: [id])
   userId       String
-
   contest      Contest   @relation(fields: [contestId], references: [id])
   contestId    String
-
   bookmarked   Boolean   @default(false)
   reminder     Boolean   @default(false)
   note         String?
   solutionUrl  String?
-
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 
   @@unique([userId, contestId])
-}
-model GoogleAccount {
-  id           String   @id @default(cuid())
-  userId       String   @unique // Clerk user ID
-  accessToken  String
-  refreshToken String
-  expiryDate   DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 }

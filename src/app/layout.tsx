@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from 'geist/font/sans';
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import {ClerkProvider} from "@clerk/nextjs"
+import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 
 export const metadata: Metadata = {
   title: "SyntaxContest",
-  description: "Track Contests",
+  description: "Track Coding Contests from LeetCode, Codeforces, CodeChef & More",
 };
 
 export default function RootLayout({
@@ -25,23 +16,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
-    <ClerkProvider>
-    <html lang="en" suppressHydrationWarning>
-      <head />
-      <body className="bg-zinc-100 dark:bg-zinc-950/80">
+    <html lang="en" suppressHydrationWarning className={GeistSans.className}>
+      <body className="min-h-screen dark:bg-background bg-muted antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
         >
-          <Navbar />
-          {children}
+          <ClerkProvider>
+            <div className="relative flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+            </div>
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>
-    </ClerkProvider>
-  </>
   );
 }
