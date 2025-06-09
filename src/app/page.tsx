@@ -4,6 +4,7 @@ import { ContestTabs } from "@/components/contests"
 import { getContestsFromDatabase, syncContestsToDatabase } from "@/services/contests/db"
 import { prisma } from "@/lib/prisma"
 import { getOrCreateUser } from "@/lib/getOrCreateUser"
+import { AnimatedPlatforms } from "@/components/AnimatedPlatforms"
 
 // Add dynamic route segment configuration
 export const dynamic = 'force-dynamic'
@@ -27,9 +28,12 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen">
       <div className="mt-16 md:px-20 sm:px-4">
-        <h1 className="dark:bg-gradient-to-t dark:from-zinc-50 dark:via-neutral-200 dark:to-zinc-400 text-transparent bg-clip-text text-3xl sm:text-4xl md:text-6xl font-[400] md:px-8 px-2 bg-gradient-to-t from-zinc-800 to-zinc-700">
-          Track Coding Contests from   <br></br>LeetCode, Codeforces, CodeChef & More
-        </h1>
+        <div className="text-3xl sm:text-4xl md:text-6xl font-[400] md:px-8 px-2">
+          <h1 className="dark:bg-gradient-to-t dark:from-zinc-50 dark:via-neutral-200 dark:to-zinc-400 text-transparent bg-clip-text bg-gradient-to-t from-zinc-800 to-zinc-700">
+            Track Coding Contests from
+          </h1>
+          <AnimatedPlatforms />
+        </div>
         <h3 className="text-md sm:text-lg md:text-2xl font-[350] mt-6 md:px-8 dark:text-zinc-200 text-zinc-800 px-2">
           Manage and explore upcoming and past programming contests — all in one place, beautifully organized for competitive programmers.
         </h3>
