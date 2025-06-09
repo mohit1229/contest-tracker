@@ -76,10 +76,6 @@ Fetches contests from:
 - ✅ CodeChef (REST)
 
 
-```
-
----
-
 ### 🔃 2. Upserting to DB (`actions/fetch-contests.ts`)
 
 - Transforms contests
