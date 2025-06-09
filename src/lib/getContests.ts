@@ -49,7 +49,6 @@ export async function getContests() {
     prisma.contest.findMany({
       where: { endTime: { lt: now } },
       orderBy: { endTime: "desc" },
-      take: 10,
       select,
     }),
   ])

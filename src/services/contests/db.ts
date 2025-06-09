@@ -94,7 +94,6 @@ export async function getContestsFromDatabase(userId?: string) {
     prisma.contest.findMany({
       where: { endTime: { lt: now } },
       orderBy: { endTime: "desc" },
-      take: 10,
       select,
     }),
   ])
