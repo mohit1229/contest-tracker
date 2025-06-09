@@ -10,7 +10,11 @@ export const metadata: Metadata = {
   description: "Track coding contests from various platforms",
   icons: {
     icon: [
-      { url: '/s.png', type: 'image/png' }
+      {
+        url: '/s.png',
+        sizes: '32x32',
+        type: 'image/png',
+      }
     ]
   }
 };
@@ -22,9 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={GeistSans.className}>
-      <head>
-        <link rel="icon" href="/s.png" type="image/png" />
-      </head>
+      <head />
       <body className="min-h-screen dark:bg-background bg-muted antialiased">
         <ThemeProvider
           attribute="class"
