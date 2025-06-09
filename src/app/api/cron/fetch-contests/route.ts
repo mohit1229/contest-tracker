@@ -8,16 +8,14 @@ export const maxDuration = 60 // Maximum allowed duration for hobby plan
 
 export async function GET(req: Request) {
   try {
-    // Check if we're in a build environment
-    if (process.env.VERCEL_ENV === 'production' && process.env.VERCEL_BUILD_STEP === '1') {
-      return NextResponse.json({ message: "Skipping during build" }, { status: 200 })
-    }
+    // Skip auth check in development
+    if (process.env.NODE_ENV !== 'development') {
+      const authHeader = req.headers.get("Authorization")
+      const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
 
-    const authHeader = req.headers.get("Authorization")
-    const expectedAuth = `Bearer ${process.env.CRON_SECRET}`
-
-    if (authHeader !== expectedAuth) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      if (authHeader !== expectedAuth) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      }
     }
 
     const result = await syncContestsToDatabase()

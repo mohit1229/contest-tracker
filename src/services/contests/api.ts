@@ -55,27 +55,68 @@ export async function fetchCodeforcesContests(): Promise<Contest[]> {
 export async function fetchCodeChefContests(): Promise<Contest[]> {
   try {
     const res = await axios.get(
-      "https://www.codechef.com/api/list/contests/all?sort_by=START&sorting_order=asc&offset=0&mode=all"
-    )
+      "https://www.codechef.com/api/list/contests/all",
+      {
+        params: {
+          sort_by: 'START',
+          sorting_order: 'asc',
+          offset: 0,
+          mode: 'all'
+        },
+        headers: {
+          'Accept': 'application/json',
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      }
+    );
 
-    const transformContest = (contest: CodeChefContest) => ({
-      id: contest.contest_code,
-      title: contest.contest_name,
-      platform: "CodeChef",
-      description: "CodeChef Contest",
-      url: `https://www.codechef.com/${contest.contest_code}`,
-      startTime: new Date(contest.contest_start_date),
-      endTime: new Date(
-        new Date(contest.contest_start_date).getTime() + contest.contest_duration * 60 * 1000
-      ),
-    })
+    console.log('CodeChef API Response:', {
+      futureCount: res.data.future_contests?.length || 0,
+      pastCount: res.data.past_contests?.length || 0,
+      sampleFuture: res.data.future_contests?.[0],
+      samplePast: res.data.past_contests?.[0]
+    });
 
-    return [
-      ...res.data.future_contests.map(transformContest),
-      ...res.data.past_contests.map(transformContest),
-    ]
+    const transformContest = (contest: CodeChefContest) => {
+      const startTime = new Date(contest.contest_start_date);
+      const duration = parseInt(contest.contest_duration?.toString() || '0');
+      const endTime = new Date(startTime.getTime() + duration * 60 * 1000);
+
+      return {
+        id: contest.contest_code,
+        title: contest.contest_name,
+        platform: "CodeChef",
+        description: "CodeChef Contest",
+        url: `https://www.codechef.com/${contest.contest_code}`,
+        startTime,
+        endTime,
+      };
+    };
+
+    const now = new Date();
+    const allContests = [
+      ...(res.data.future_contests || []).map(transformContest),
+      ...(res.data.past_contests || []).map(transformContest),
+    ];
+
+    // Log transformed contests for debugging
+    console.log('Transformed CodeChef Contests:', {
+      total: allContests.length,
+      upcoming: allContests.filter(c => c.startTime > now).length,
+      past: allContests.filter(c => c.endTime < now).length,
+      sample: allContests[0]
+    });
+
+    return allContests;
   } catch (error) {
     console.error("Failed to fetch from CodeChef:", error)
+    if (axios.isAxiosError(error)) {
+      console.error("CodeChef API Error Details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers
+      });
+    }
     return []
   }
 }
