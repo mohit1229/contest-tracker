@@ -8,10 +8,19 @@ import Navbar from "@/components/Navbar";
 export const metadata: Metadata = {
   title: "Contest Tracker",
   description: "Track coding contests from various platforms",
-  icons: {
-    icon: '/s.png',
-    apple: '/s.png',
-  },
+  icons: [
+    {
+      rel: 'icon',
+      url: '/s.png',
+      type: 'image/png',
+      sizes: '32x32'
+    },
+    {
+      rel: 'apple-touch-icon',
+      url: '/s.png',
+      sizes: '180x180'
+    }
+  ]
 };
 
 export default function RootLayout({
