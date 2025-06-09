@@ -6,8 +6,12 @@ import { ClerkProvider } from "@clerk/nextjs";
 import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
-  title: "SyntaxContest",
-  description: "Track Coding Contests from LeetCode, Codeforces, CodeChef & More",
+  title: "Contest Tracker",
+  description: "Track coding contests from various platforms",
+  icons: {
+    icon: '/s.png',
+    apple: '/s.png',
+  },
 };
 
 export default function RootLayout({
@@ -17,6 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={GeistSans.className}>
+      <head />
       <body className="min-h-screen dark:bg-background bg-muted antialiased">
         <ThemeProvider
           attribute="class"
