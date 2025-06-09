@@ -8,19 +8,11 @@ import Navbar from "@/components/Navbar";
 export const metadata: Metadata = {
   title: "Contest Tracker",
   description: "Track coding contests from various platforms",
-  icons: [
-    {
-      rel: 'icon',
-      url: '/s.png',
-      type: 'image/png',
-      sizes: '32x32'
-    },
-    {
-      rel: 'apple-touch-icon',
-      url: '/s.png',
-      sizes: '180x180'
-    }
-  ]
+  icons: {
+    icon: [
+      { url: '/s.png', type: 'image/png' }
+    ]
+  }
 };
 
 export default function RootLayout({
@@ -30,7 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className={GeistSans.className}>
-      <head />
+      <head>
+        <link rel="icon" href="/s.png" type="image/png" />
+      </head>
       <body className="min-h-screen dark:bg-background bg-muted antialiased">
         <ThemeProvider
           attribute="class"
