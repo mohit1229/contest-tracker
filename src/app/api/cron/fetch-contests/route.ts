@@ -19,7 +19,7 @@ export async function GET(req: Request) {
     }
 
     const result = await syncContestsToDatabase()
-    console.log(`⏰ Cron fetched ${result.count} contests`)
+    console.log(`Cron fetched ${result.count} contests`)
 
     return NextResponse.json({ success: true, count: result.count }, { status: 200 })
   } catch (err) {

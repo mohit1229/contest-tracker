@@ -35,6 +35,8 @@ export interface CodeforcesContest {
 export interface CodeChefContest {
   contest_code: string
   contest_name: string
-  contest_start_date: string
-  contest_duration: string | number
+  contest_start_date_iso: string
+  // contest_duration: string | number
+  contest_end_date_iso: string
+
 } 

@@ -97,7 +97,7 @@ export async function getContestsFromDatabase(userId?: string) {
       select,
     }),
   ])
-
+// console.log(upcomingRaw,pastRaw)
   type ContestWithUserData = {
     id: string
     title: string

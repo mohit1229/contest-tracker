@@ -1,5 +1,7 @@
 import axios from "axios"
 import { Contest, LeetCodeContest, CodeforcesContest, CodeChefContest } from "@/types"
+// import { toZonedTime } from 'date-fns-tz'
+// import { zonedTimeToUtc } from 'date-fns-tz/dist/esm'
 
 export async function fetchLeetCodeContests(): Promise<Contest[]> {
   try {
@@ -70,17 +72,17 @@ export async function fetchCodeChefContests(): Promise<Contest[]> {
       }
     );
 
-    console.log('CodeChef API Response:', {
-      futureCount: res.data.future_contests?.length || 0,
-      pastCount: res.data.past_contests?.length || 0,
-      sampleFuture: res.data.future_contests?.[0],
-      samplePast: res.data.past_contests?.[0]
-    });
+    // console.log('CodeChef API Response:', {
+    //   futureCount: res.data.future_contests?.length || 0,
+    //   pastCount: res.data.past_contests?.length || 0,
+    //   sampleFuture: res.data.future_contests?.[0],
+    //   samplePast: res.data.past_contests?.[0]
+    // });
+    const transformContest = (contest: CodeChefContest): Contest => {
+     const startTime = new Date(contest.contest_start_date_iso);  // Reliable ISO format
+      const endTime = new Date(contest.contest_end_date_iso);      // Reliable ISO format
+      // const duration = (endTime.getTime() - startTime.getTime()) / (60 * 1000);
 
-    const transformContest = (contest: CodeChefContest) => {
-      const startTime = new Date(contest.contest_start_date);
-      const duration = parseInt(contest.contest_duration?.toString() || '0');
-      const endTime = new Date(startTime.getTime() + duration * 60 * 1000);
 
       return {
         id: contest.contest_code,
@@ -90,8 +92,9 @@ export async function fetchCodeChefContests(): Promise<Contest[]> {
         url: `https://www.codechef.com/${contest.contest_code}`,
         startTime,
         endTime,
-      };
-    };
+      }
+    }
+    
 
     const now = new Date();
     const allContests = [
