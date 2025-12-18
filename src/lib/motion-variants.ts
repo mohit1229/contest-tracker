@@ -1,4 +1,6 @@
-export const cardVariants = {
+import { Variants } from "framer-motion"
+
+export const cardVariants: Variants = {
   initial: { 
     opacity: 0.8,
     y: 10,
@@ -9,7 +11,7 @@ export const cardVariants = {
     y: 0,
     scale: 1,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 30
     }
@@ -18,7 +20,7 @@ export const cardVariants = {
     scale: 1.01,
     y: -2,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 30
     }
@@ -26,18 +28,18 @@ export const cardVariants = {
   tap: {
     scale: 0.98,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 30
     }
   }
 }
 
-export const buttonVariants = {
+export const buttonVariants: Variants = {
   hover: {
     scale: 1.05,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 20
     }
@@ -45,14 +47,14 @@ export const buttonVariants = {
   tap: {
     scale: 0.95,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 400,
       damping: 20
     }
   }
 }
 
-export const staggerContainer = {
+export const staggerContainer: Variants = {
   animate: {
     transition: {
       staggerChildren: 0.1
@@ -60,7 +62,7 @@ export const staggerContainer = {
   }
 }
 
-export const fadeInUp = {
+export const fadeInUp: Variants = {
   initial: {
     opacity: 0,
     y: 20
@@ -69,9 +71,9 @@ export const fadeInUp = {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
+      type: "spring" as const,
       stiffness: 300,
       damping: 30
     }
   }
-} 
+}
